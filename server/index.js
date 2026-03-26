@@ -8,34 +8,31 @@ const connectDB = require("./config/db");
 
 const app = express();
 
+// ✅ Fix proxy issue (Render)
+app.set("trust proxy", 1);
+
 // ✅ Connect database
 connectDB();
 
-// ✅ Allowed origins (use env for production)
+// ✅ Allowed origins
 const allowedOrigins = [
     "http://localhost:5173",
     process.env.CLIENT_URL
 ];
 
-// ✅ CORS configuration (FIXED)
-app.use(cors({
-    origin: (origin, callback) => {
-        // allow requests with no origin (Postman, mobile apps, etc.)
-        if (!origin) return callback(null, true);
-
-        if (allowedOrigins.includes(origin)) {
-            return callback(null, true);
-        }
-
-        return callback(null, false); // ❗ don't throw error
-    },
+// ✅ CORS options (FINAL FIX)
+const corsOptions = {
+    origin: allowedOrigins,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
-}));
+};
 
-// ✅ Handle preflight requests (VERY IMPORTANT)
-app.options("*", cors());
+// ✅ Apply CORS
+app.use(cors(corsOptions));
+
+// ✅ Handle preflight correctly
+app.options("*", cors(corsOptions));
 
 // ✅ Middleware
 app.use(express.json({ limit: "2mb" }));
@@ -43,7 +40,7 @@ app.use(morgan("dev"));
 
 // ✅ Rate limiting
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 mins
+    windowMs: 15 * 60 * 1000,
     max: 200,
     message: "Too many requests, slow down",
 });
