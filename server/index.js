@@ -8,22 +8,32 @@ const connectDB = require("./config/db");
 
 const app = express();
 
-// ✅ Fix proxy issue (Render)
+// ✅ Trust proxy (Render / production)
 app.set("trust proxy", 1);
 
-// ✅ Connect database
+// ✅ Connect DB
 connectDB();
 
-// ✅ Allowed origins
-const allowedOrigins = [
-    "http://localhost:5173",
-    process.env.CLIENT_URL
-];
-
-// ✅ CORS options (FINAL FIX)
+// ✅ CORS CONFIG (safe + production ready)
 const corsOptions = {
-    origin: allowedOrigins,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    origin: function (origin, callback) {
+        // Allow requests with no origin (Postman, mobile apps)
+        if (!origin) return callback(null, true);
+
+        // Allow localhost
+        if (origin === "http://localhost:5173") {
+            return callback(null, true);
+        }
+
+        // Allow ALL Vercel deployments
+        if (origin && origin.includes("vercel.app")) {
+            return callback(null, true);
+        }
+
+        // Block others safely (no crash)
+        return callback(null, false);
+    },
+    methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
 };
@@ -31,20 +41,31 @@ const corsOptions = {
 // ✅ Apply CORS
 app.use(cors(corsOptions));
 
-// ✅ Handle preflight correctly
-app.options("*", cors(corsOptions));
-
 // ✅ Middleware
-app.use(express.json({ limit: "2mb" }));
+app.use(express.json());
 app.use(morgan("dev"));
 
-// ✅ Rate limiting
+// ✅ Debug logs only in development
+if (process.env.NODE_ENV !== "production") {
+    app.use((req, res, next) => {
+        console.log("Incoming:", req.method, req.url);
+        next();
+    });
+}
+
+// ✅ Rate limiting (API protection)
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
+    windowMs: 15 * 60 * 1000, // 15 mins
     max: 200,
-    message: "Too many requests, slow down",
+    message: "Too many requests, please try again later"
 });
+
 app.use("/api/", limiter);
+
+// ✅ Root route (fix 404 on "/")
+app.get("/", (req, res) => {
+    res.send("🚀 LearnBot API is running");
+});
 
 // ✅ Routes
 app.use("/api/auth", require("./routes/auth"));
@@ -52,7 +73,7 @@ app.use("/api/history", require("./routes/history"));
 
 // ✅ Health check
 app.get("/api/health", (req, res) => {
-    res.json({ status: "ok", timestamp: new Date().toISOString() });
+    res.json({ status: "ok" });
 });
 
 // ✅ 404 handler
@@ -62,12 +83,16 @@ app.use((req, res) => {
 
 // ✅ Error handler
 app.use((err, req, res, next) => {
-    console.error("Error:", err.message);
-    res.status(500).json({ message: "Internal server error" });
+    console.error("ERROR:", err.message);
+
+    res.status(500).json({
+        message: err.message || "Internal Server Error"
+    });
 });
 
 // ✅ Start server
 const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, () => {
     console.log(`🚀 LearnBot server running on port ${PORT}`);
 });
