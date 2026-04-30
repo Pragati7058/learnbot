@@ -1,0 +1,241 @@
+/* ─── Theme Variables (defaults — overridden by ThemeProvider) ─ */
+:root {
+  --color-accent: #6366f1;
+  --color-accent-light: #e0e7ff;
+  --color-accent-text: #3730a3;
+  --color-accent-glow: #6366f155;
+  --app-bg: #07090f;
+  --card-bg: #0f172a;
+  --card-border: #1e293b;
+  --text-primary: #f1f5f9;
+  --text-secondary: #64748b;
+  --font-size-base: 14px;
+  --glass-bg: rgba(255, 255, 255, .04);
+  --glass-border: rgba(255, 255, 255, .07);
+
+  /* ─── Panel vars (Bookmarks / StatsPanel / StudyPlanner) ─── */
+  --panel-bg: rgba(7, 9, 15, 0.97);
+  --panel-border: rgba(255, 255, 255, 0.07);
+  --card-bg-deep: rgba(0, 0, 0, 0.25);
+  --input-bg: rgba(255, 255, 255, 0.05);
+  --text-muted: #475569;
+  --color-scheme: dark;
+}
+
+/* ─── Global Reset & Base ─────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  transition: background-color .3s, color .3s, border-color .3s, box-shadow .3s;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--app-bg);
+  color: var(--text-primary);
+  cursor: none;
+  font-size: var(--font-size-base);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Mobile: restore cursor, fix tap highlight ────────────── */
+@media (pointer: coarse) {
+  body {
+    cursor: auto;
+  }
+
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* ─── Scrollbar ────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-accent-glow);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent);
+}
+
+/* ─── Animations ───────────────────────────────────────────── */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse-dot {
+
+  0%,
+  80%,
+  100% {
+    transform: scale(.6);
+    opacity: .3;
+  }
+
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes glow-pulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 16px var(--color-accent-glow);
+  }
+
+  50% {
+    box-shadow: 0 0 32px var(--color-accent);
+  }
+}
+
+@keyframes fc-flip {
+  from {
+    transform: rotateY(0deg);
+  }
+
+  to {
+    transform: rotateY(180deg);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* ─── Utility classes ──────────────────────────────────────── */
+.animate-fade-up {
+  animation: fadeUp .22s ease both;
+}
+
+.animate-fade-in {
+  animation: fadeIn .2s ease both;
+}
+
+.animate-scale-in {
+  animation: scaleIn .2s ease both;
+}
+
+/* ─── Glass surface tokens ─────────────────────────────────── */
+.glass-surface {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+}
+
+.glass-surface-raised {
+  background: rgba(255, 255, 255, .06);
+  backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, .25);
+}
+
+/* ─── Theme-aware utility classes ───────────────────────────── */
+.bg-app {
+  background: var(--app-bg) !important;
+}
+
+.bg-card {
+  background: var(--card-bg) !important;
+}
+
+.text-primary {
+  color: var(--text-primary) !important;
+}
+
+.text-secondary {
+  color: var(--text-secondary) !important;
+}
+
+.text-accent {
+  color: var(--color-accent) !important;
+}
+
+.border-card {
+  border-color: var(--card-border) !important;
+}
+
+.accent-bg {
+  background: var(--color-accent) !important;
+}
+
+.accent-bg-soft {
+  background: var(--color-accent-light) !important;
+}
