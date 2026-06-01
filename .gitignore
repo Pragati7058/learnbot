@@ -5,3 +5,7 @@
 .env.*
 
 client/dist
+
+dist/
+
+client/dist/

@@ -20,7 +20,7 @@ export const api = {
   register: (body) => request("/api/auth/register", { method: "POST", body: JSON.stringify(body) }),
   login: (body) => request("/api/auth/login", { method: "POST", body: JSON.stringify(body) }),
   forgot: (body) => request("/api/auth/forgot", { method: "POST", body: JSON.stringify(body) }),
-  reset: (body) => request("/api/auth/reset", { method: "POST", body: JSON.stringify(body) }),
+  reset: (token, body) => request("/api/auth/reset", { method: "POST", body: JSON.stringify({ token, ...body }) }),
   me: () => request("/api/auth/me"),
   saveApiKey: (apiKey) => request("/api/auth/apikey", { method: "PUT", body: JSON.stringify({ apiKey }) }),
 

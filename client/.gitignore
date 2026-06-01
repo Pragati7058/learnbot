@@ -1,2 +1,2 @@
-.vercel
-.env*.local
+﻿server/.env
+node_modules/

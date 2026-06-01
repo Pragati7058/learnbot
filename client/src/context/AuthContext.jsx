@@ -61,6 +61,7 @@ export function AuthProvider({ children }) {
     return await api.reset(token, { password, confirmPassword });
   };
 
+
   return (
     <AuthContext.Provider value={{
       user,

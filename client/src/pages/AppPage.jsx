@@ -581,7 +581,7 @@ export default function AppPage({ onShowBookmarks, onShowStats, onShowPlanner })
                 >✕</button>
               </div>
               <div style={{ flex: 1, overflow: "auto" }}>
-                <PanelComponent onClose={() => setActivePanel(null)} />
+                <PanelComponent onClose={() => setActivePanel(null)} apiKey={apiKey} color={feat.color} />
               </div>
             </div>
           </div>
